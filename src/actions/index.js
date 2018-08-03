@@ -19,7 +19,9 @@ const initData_json = `{
     "Button": {
       "color": "primary",
       "variant": "contained",
-      "className": "root"
+      "className": {
+        "root": false
+      }
     },
     "Text": {}
   },
@@ -72,7 +74,9 @@ const initData_json = `{
         "type": "Button",
         "variant": "extendedFab",
         "onClick": "]]openDialog",
-        "className": "override",
+        "className": {
+          "root": "@@useRoot"
+        },
         "children": [
           {
             "type": "NavigationIcon"
@@ -96,12 +100,12 @@ const initData_json = `{
                 "type": "Button",
                 "children": "第二个按钮",
                 "variant": "fab",
-                "onClick": "]]alert"
+                "onClick": "]]alert]]tt"
               },
               {
                 "type": "Button",
                 "children": "Button 2",
-                "onClick": "]]alert"
+                "onClick": "]]alert]]ffff"
               },
               {
                 "type": "Button",
@@ -121,11 +125,11 @@ const initData_json = `{
     ]
   },
   "func": {
-    "alert": "return function (app, state) { alert('xxx')};",
-    "openDialog": "return function (app, state) { state['open']=true; return state;};",
-    "closeThisDialog": "return function (app, state) { state['open']=false; return state;};",
-    "toABC": "return function (app, state) { state['b']='OK Changed'; app.props.history.push('/abc'); return state;};",
-    "toHomepage": "return function (app, state) { app.props.history.push('/'); return state;};"
+    "alert": "return function (app, payload, state) { alert(payload)};",
+    "openDialog": "return function (app, payload, state) { state['open']=true; return state;};",
+    "closeThisDialog": "return function (app, payload, state) { state['open']=false; return state;};",
+    "toABC": "return function (app, payload, state) { state['b']='OK Changed'; app.props.history.push('/abc'); return state;};",
+    "toHomepage": "return function (app, payload, state) { app.props.history.push('/'); return state;};"
   },
   "route": [
     {
@@ -143,7 +147,8 @@ const initData_json = `{
     "/": {
       "x": "open dialog",
       "b": "ChangeMe",
-      "open": false
+      "open": false,
+      "useRoot": true
     },
     "/abc": {
       "a": "xxxsxx"
@@ -242,11 +247,12 @@ export function initRoutes(routes) {
   }
 }
 
-export function execute(app, actionTerm, func) {
+export function execute(app, actionTerm, func, payload) {
   return {
     type: 'EXECUTE',
     app,
     actionTerm,
-    func
+    func,
+    payload
   }
 }

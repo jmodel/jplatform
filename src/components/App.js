@@ -10,8 +10,8 @@ class App extends Component {
     super(props);
   }
 
-  handleEvent(thisRef, actionTerm, func) {
-    thisRef.props.execute(thisRef, actionTerm, func);
+  handleEvent(thisRef, actionTerm, func, payload) {
+    thisRef.props.execute(thisRef, actionTerm, func, payload);
   }
 
   render() {
@@ -24,7 +24,8 @@ class App extends Component {
     let thisRef = this;
     var page = JSON.parse(JSON.stringify(ui.get(location.pathname)), function (k, v) {
       if (typeof v === 'string' && v.startsWith(']]')) {
-        return () => thisRef.handleEvent(thisRef, v.substring(2), func);
+        let arr = v.split(']]');
+        return () => thisRef.handleEvent(thisRef, arr[1], func, arr[2]);
       } else if (typeof v === 'string' && v.startsWith('@@')) {
         return (() => data.get(location.pathname)[v.substring(2)])();;
       } else {
