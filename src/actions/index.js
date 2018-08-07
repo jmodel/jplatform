@@ -1,27 +1,81 @@
 import { Map as ImmutableMap } from 'immutable';
 import { initData as init } from './';
 
+const initCss_json = `{
+  root: {
+    flexGrow: 1,
+    height: 430,
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex',
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: '240px',
+    width: \`calc(100% - 240px)\`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 36,
+  },
+  hide: {
+    display: 'none',
+  },
+  drawerPaper: {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: '240px',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing.unit * 7,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing.unit * 9,
+    },
+  },
+  toolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 3,
+  },
+}`;
+
 const initData_json = `{
   "themes": {
     "palette": {
       "type": "dark"
     }
   },
-  "css": {
-    "root": {
-      "background": "green"
-    },
-    "override": {
-      "background": "black"
-    }
-  },
   "defaultProps": {
     "Button": {
       "color": "primary",
-      "variant": "contained",
-      "className": {
-        "root": false
-      }
+      "variant": "contained"
     },
     "Text": {}
   },
@@ -74,9 +128,6 @@ const initData_json = `{
         "type": "Button",
         "variant": "extendedFab",
         "onClick": "]]openDialog",
-        "className": {
-          "root": "@@useRoot"
-        },
         "children": [
           {
             "type": "NavigationIcon"
@@ -118,9 +169,78 @@ const initData_json = `{
     ],
     "/abc": [
       {
-        "type": "Button",
-        "onClick": "]]toHomepage",
-        "children": "@@a"
+        "type": "div",
+        "className": {
+          "root": true
+        },
+        "children": [
+          {
+            "type": "AppBar",
+            "position": "absolute",
+            "className": {
+              "appBar": true,
+              "appBarShift": "@@drawerOpen"
+            },
+            "children": [
+              {
+                "type": "Toolbar",
+                "disableGutters": "@@drawerClose",
+                "children": [
+                  {
+                    "type": "IconButton",
+                    "color": "inherit",
+                    "aria-label": "Open drawer",
+                    "onClick": "]]handleDrawerOpen",
+                    "className": {
+                      "menuButton": true,
+                      "hide": "@@drawerOpen"
+                    },
+                    "children": [
+                      {
+                        "type": "MenuIcon"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Typography",
+                    "variant": "title",
+                    "color": "inherit",
+                    "noWrap": true,
+                    "children": "Mini variant drawer"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Drawer",
+            "variant": "permanent",
+            "open": "@@drawerOpen",
+            "className": {
+              "drawerPaper": true,
+              "drawerPaperClose": "@@drawerClose"
+            },
+            "children": [
+              {
+                "type": "div",
+                "className": {
+                  "toolbar": true
+                },
+                "children": [
+                  {
+                    "type": "IconButton",
+                    "onClick": "]]handleDrawerClose",
+                    "children": [
+                      {
+                        "type": "ChevronRightIcon"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -129,7 +249,9 @@ const initData_json = `{
     "openDialog": "return function (app, payload, state) { state['open']=true; return state;};",
     "closeThisDialog": "return function (app, payload, state) { state['open']=false; return state;};",
     "toABC": "return function (app, payload, state) { state['b']='OK Changed'; app.props.history.push('/abc'); return state;};",
-    "toHomepage": "return function (app, payload, state) { app.props.history.push('/'); return state;};"
+    "toHomepage": "return function (app, payload, state) { app.props.history.push('/'); return state;};",
+    "handleDrawerOpen": "return function (app, payload, state) { state['drawerOpen']=true; state['drawerClose']=false; return state;};",
+    "handleDrawerClose": "return function (app, payload, state) { state['drawerOpen']=false; state['drawerClose']=true; return state;};"
   },
   "route": [
     {
@@ -148,19 +270,25 @@ const initData_json = `{
       "x": "open dialog",
       "b": "ChangeMe",
       "open": false,
-      "useRoot": true
+      "useRoot": false
     },
     "/abc": {
-      "a": "xxxsxx"
+      "a": "xxxsxx",
+      "useAppBarShift": false,
+      "drawerOpen": false,
+      "drawerClose": true
     }
   }
 }`;
 
 export function fetchInitData(url) {
   return (dispatch, getState) => {
+
+    const cssFuncExpr = "return function (theme) { return (" + initCss_json + ");};";
+    const css = Function(cssFuncExpr);
+
     const initData = JSON.parse(initData_json);
     let themes;
-    let css;
     let uiMap = ImmutableMap();
     let funcMap = ImmutableMap();
     let routeMap = ImmutableMap();
@@ -190,8 +318,6 @@ export function fetchInitData(url) {
           }
         } else if (key === 'route') {
           routeMap = routeMap.set(key, obj);
-        } else if (key === 'css') {
-          css = obj;
         } else if (key === 'themes') {
           themes = obj;
         } else if (key === 'data') {
