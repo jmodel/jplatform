@@ -19,7 +19,7 @@ const initCss_json = `{
   },
   appBarShift: {
     marginLeft: '240px',
-    width: \`calc(100% - 240px)\`,
+    width: 'calc(100% - 240px)',
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -35,7 +35,7 @@ const initCss_json = `{
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: '240px',
+    width: '480px',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -68,9 +68,7 @@ const initCss_json = `{
 
 const initData_json = `{
   "themes": {
-    "palette": {
-      "type": "dark"
-    }
+    
   },
   "defaultProps": {
     "Button": {
@@ -216,9 +214,13 @@ const initData_json = `{
             "type": "Drawer",
             "variant": "permanent",
             "open": "@@drawerOpen",
-            "className": {
-              "drawerPaper": true,
-              "drawerPaperClose": "@@drawerClose"
+            "classes": {
+              "paper": {
+                "className": {
+                  "drawerPaper": true,
+                  "drawerPaperClose": "@@drawerClose"
+                }
+              }
             },
             "children": [
               {
@@ -232,7 +234,33 @@ const initData_json = `{
                     "onClick": "]]handleDrawerClose",
                     "children": [
                       {
-                        "type": "ChevronRightIcon"
+                        "type": "ChevronLeftIcon"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "Divider"
+              },
+              {
+                "type": "List",
+                "children": [
+                  {
+                    "type": "ListItem",
+                    "button": true,
+                    "children": [
+                      {
+                        "type": "ListItemIcon",
+                        "children": [
+                          {
+                            "type": "InboxIcon"
+                          } 
+                        ]                       
+                      },
+                      {
+                        "type": "ListItemText",
+                        "primary": "Inbox"
                       }
                     ]
                   }
