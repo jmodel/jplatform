@@ -18,7 +18,7 @@ const initCss_json = `{
     }),
   },
   appBarShift: {
-    marginLeft: '240px',
+    marginLeft: 240,
     width: 'calc(100% - 240px)',
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -35,7 +35,7 @@ const initCss_json = `{
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
-    width: '480px',
+    width: 240,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -176,7 +176,7 @@ const initData_json = `{
             "type": "AppBar",
             "position": "absolute",
             "className": {
-              "appBar": true,
+              "appBar": "@@drawerClose",
               "appBarShift": "@@drawerOpen"
             },
             "children": [
@@ -214,19 +214,19 @@ const initData_json = `{
             "type": "Drawer",
             "variant": "permanent",
             "open": "@@drawerOpen",
-            "classes": {
-              "paper": {
-                "className": {
-                  "drawerPaper": true,
-                  "drawerPaperClose": "@@drawerClose"
-                }
-              }
+            "className": {
+              "drawerPaper": "@@drawerOpen",
+              "drawerPaperClose": "@@drawerClose"
             },
             "children": [
               {
                 "type": "div",
                 "className": {
                   "toolbar": true
+                },
+                "style": {
+                  "background": "yellow",
+                  "width": "240px"
                 },
                 "children": [
                   {
