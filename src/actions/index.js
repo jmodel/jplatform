@@ -4,7 +4,7 @@ import { initData as init } from './';
 const initCss_json = `{
   root: {
     flexGrow: 1,
-    height: 430,
+    height: '100%',
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -165,6 +165,11 @@ const initData_json = `{
         ]
       }
     ],
+    "/xxx": [
+      {
+        "type": "MiniDrawer"
+      }
+    ],
     "/abc": [
       {
         "type": "div",
@@ -212,12 +217,16 @@ const initData_json = `{
           },
           {
             "type": "Drawer",
-            "variant": "permanent",
-            "open": "@@drawerOpen",
-            "className": {
-              "drawerPaper": "@@drawerOpen",
-              "drawerPaperClose": "@@drawerClose"
+            "variant": "permanent",            
+            "classes": {
+              "paper": {
+                "className": {
+                  "drawerPaper": true,
+                  "drawerPaperClose": "@@drawerClose"
+                }
+              }
             },
+            "open": "@@drawerOpen",
             "children": [
               {
                 "type": "div",
@@ -225,7 +234,6 @@ const initData_json = `{
                   "toolbar": true
                 },
                 "style": {
-                  "background": "yellow",
                   "width": "240px"
                 },
                 "children": [
@@ -267,6 +275,25 @@ const initData_json = `{
                 ]
               }
             ]
+          },
+          {
+            "type": "main",
+            "className": {
+              "content": true
+            },
+            "children": [
+              {
+                "type": "div",
+                "className": {
+                  "toolbar": true
+                }
+              },
+              {
+                "type": "Typography",
+                "noWrap": true,
+                "children": "hello"
+              }
+            ]
           }
         ]
       }
@@ -289,6 +316,10 @@ const initData_json = `{
         {
           "path": "/bus",
           "component": "$$"
+        },
+        {
+          "path": "/ccc",
+          "component": "$$"
         }
       ]
     }
@@ -305,6 +336,8 @@ const initData_json = `{
       "useAppBarShift": false,
       "drawerOpen": false,
       "drawerClose": true
+    },
+    "/xxx": {
     }
   }
 }`;
